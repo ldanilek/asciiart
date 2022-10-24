@@ -159,16 +159,24 @@ def parse_font(font):
         pixels[c] = matrix
     return pixels
 
-def parse_tff():
+def parse_tff(symbols: bool, boxes: bool):
     pixels = {}
     line_height = 11
     font = ImageFont.truetype('/Users/lee/src/asciiart/SF-Mono-Regular.ttf',
                             size=line_height)
-    characters = chain(
-        range(32, 127),  # ascii
-        #range(0x2000, 0x2BFF + 1),  # arrows and symbols
-        #range(0x1f000, 0x1faff),  # emojis (but they don't work i think)
-    )
+    characters = range(32, 127)  # ascii
+    if symbols:
+        characters = chain(
+            characters,  # ascii
+            range(0x2000, 0x2500),  # arrows and symbols
+            range(0x2600, 0x2BFF + 1),  # arrows and symbols
+        )
+    if boxes:
+        characters = chain(
+            characters,
+            range(0x2500, 0x2600),
+        )
+    #range(0x1f000, 0x1faff),  # emojis (but they don't work i think)
     for u in characters:
         image = Image.new('RGB', (8, 13), 'white')
         drawer = ImageDraw.Draw(image)

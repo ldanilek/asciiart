@@ -4,10 +4,24 @@ import numpy as np
 from font import parse_font, bitmap_font, parse_tff
 from image import parse_image
 import sys
+import argparse
+
+parser = argparse.ArgumentParser(description='Process some integers.')
+parser.add_argument('image_path', type=str,
+                    help='path of image to convert')
+parser.add_argument('--symbols', dest='symbols', action='store_const',
+                    const=True, default=False,
+                    help='allow unicode symbols in addition to ascii')
+parser.add_argument('--boxes', dest='boxes', action='store_const',
+                    const=True, default=False,
+                    help='allow unicode box symbols')
+
+args = parser.parse_args()
+
 
 bitmap = parse_font(bitmap_font)
 
-im = Image.open(sys.argv[1])
+im = Image.open(args.image_path)
 
 def encode_image(image, bitmap):
     shape = bitmap[' '].shape
@@ -37,7 +51,7 @@ def encode_image(image, bitmap):
 
 image = parse_image(im)
 
-tff_bitmap = parse_tff()
+tff_bitmap = parse_tff(args.symbols, args.boxes)
 
 encoded = encode_image(image, tff_bitmap)
     
